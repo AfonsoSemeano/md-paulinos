@@ -1,6 +1,7 @@
 import React from "react";
 import companyLogo from './assets/Logotipo-md-paulinos-horizontal.jpg';
 import cartIcon from './assets/shopping-cart.png';
+import { Link } from "react-router-dom";
 
 function TopNavbar() {
     return     <div className="navbar bg-primary">
@@ -34,12 +35,12 @@ function TopNavbar() {
 function SecondNavbar() {
   return     <div className="flex bg-secondary shadow-2xl">
   <div className="flex justify-between w-full ml-60 mr-60">
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Utensílios de Cozinha</div>
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Casa de Banho</div>
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Sala</div>
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Jogos de tabuleiro</div>
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Decoração</div>
-    <div className="btn btn-ghost btn-sm text-black rounded-none">Veículos em Miniatura</div>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Utensílios de Cozinha</Link>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Casa de Banho</Link>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Sala</Link>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Jogos de tabuleiro</Link>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Decoração</Link>
+    <Link to={`product-list`} className="btn btn-ghost btn-sm text-black rounded-none">Veículos em Miniatura</Link>
   </div>
 </div>
 }

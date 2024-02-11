@@ -95,6 +95,7 @@ CREATE TABLE product_colors (
     color_id INT NOT NULL,
     product_version_id BIGINT NOT NULL,
     extra_cost DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    is_default BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (color_id) REFERENCES colors(color_id),
     FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
@@ -117,6 +118,7 @@ CREATE TABLE product_measurements (
     measurement_values VARCHAR(4000),
     measurement_comment VARCHAR(4000),
     extra_cost DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    is_default BOOLEAN NOT NULL DEFAULT FALSE,
     
     FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
 );

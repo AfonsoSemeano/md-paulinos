@@ -1,4 +1,4 @@
-package mdpaulinos.backend.mdpaulinosbackend;
+package mdpaulinos.backend.mdpaulinosbackend.Product;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
