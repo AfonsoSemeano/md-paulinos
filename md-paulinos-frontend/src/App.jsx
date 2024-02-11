@@ -3,6 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from './navbar'
+import Carousel from './image_carousel'
+import Footer from './footer'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -10,7 +12,8 @@ function App() {
   return (
     <>
     <Navbar/>
-    <a href="https://www.flaticon.com/free-icons/cart" title="cart icons">Cart icons created by Google - Flaticon</a>
+    <Carousel />
+    <Footer />
     </>
   )
 }

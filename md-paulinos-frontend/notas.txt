@@ -4,3 +4,9 @@
 - Inserts para jogos
 - Decoração
 - Veículos em Miniatura
+
+
+
+
+
+-- Alterar o formato dos botoes de forma a ficarem mais retos e diminuir a altura da segunda navbar
