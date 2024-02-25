@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -13,21 +14,17 @@ import java.sql.Timestamp;
 @Setter
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_version_id")
-    private Long productVersionId;
-
     @Column(name = "product_id")
     private int productId;
 
-    @Column(name = "product_name")
-    private String productName;
+    @Column(name = "default_variant_id")
+    private int defaultVariantId; //remove
 
-    @Column(name = "creation_date")
-    private Timestamp creationDate;
-
-    @Nullable
-    @Column(name = "previous_product_version_id")
-    private Long previousVersionId;
+    @ManyToMany
+    @JoinTable(
+            name = "product_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories;
 }

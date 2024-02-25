@@ -20,7 +20,7 @@ public class ProductController {
     }
 
     @GetMapping("/categories")
-    public Iterable<ProductByCategoryDTO> getAllProductsByCategory(@RequestParam("category") Long categoryId) {
+    public Iterable<Product> getAllProductsByCategory(@RequestParam("category") Long categoryId) {
         return productService.getProductsByCategory(categoryId);
     }
 }

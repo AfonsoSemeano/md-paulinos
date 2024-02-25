@@ -20,19 +20,33 @@ CREATE TABLE orders (
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
+CREATE TABLE dimensions (
+    dimension_id BIGSERIAL PRIMARY KEY,
+    dimension_values VARCHAR(2000) NOT NULL,
+    dimension_comment VARCHAR(2000) NULL
+);
+
 CREATE TABLE products (
     product_version_id BIGSERIAL PRIMARY KEY,
     product_id INT NOT NULL,
     product_name VARCHAR(255) NOT NULL,
     creation_date TIMESTAMP NOT NULL,
     previous_product_version_id BIGINT NULL,
+    base_price DECIMAL(10, 2) NOT NULL,
+    default_dimension_id BIGINT NOT NULL,
+    newest BOOLEAN not null,
 
-    FOREIGN KEY (previous_product_version_id) REFERENCES products(product_version_id)
+    FOREIGN KEY (previous_product_version_id) REFERENCES products(product_version_id),
+    FOREIGN KEY (default_dimension_id) REFERENCES dimensions(dimension_id)
 );
 
+CREATE SEQUENCE products_product_id_seq
+INCREMENT 1
+START 1;
+
 CREATE TABLE product_orders (
-    product_version_id BIGINT PRIMARY KEY,
-    order_id BIGINT PRIMARY KEY,
+    product_version_id BIGINT,
+    order_id BIGINT,
 
     PRIMARY KEY (product_version_id, order_id),
     FOREIGN KEY (product_version_id) REFERENCES products(product_version_id),
@@ -51,6 +65,7 @@ CREATE TABLE product_categories (
     product_id INT NOT NULL,
     category_id INT NOT NULL,
 
+    PRIMARY KEY (product_id, category_id),
     FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
@@ -65,68 +80,58 @@ CREATE TABLE materials (
     material_image_url VARCHAR(1000)
 );
 
-CREATE TABLE product_materials (
-    material_id INT NOT NULL,
-    product_version_id BIGINT NOT NULL,
-    base_price DECIMAL(10, 2) NOT NULL,
-    is_default BOOLEAN NOT NULL DEFAULT FALSE,
-
-    FOREIGN KEY (material_id) REFERENCES materials(material_id),
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
-);
-
-CREATE TABLE product_material_images (
-    image_id BIGINT NOT NULL,
-    material_id INT NOT NULL,
-    product_version_id INT NOT NULL,
-
-    FOREIGN KEY (image_id) REFERENCES images(image_id),
-    FOREIGN KEY (material_id) REFERENCES materials(material_id),
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
-);
-
 CREATE TABLE colors (
     color_id SERIAL PRIMARY KEY,
     color_name VARCHAR(20) NOT NULL,
     color_rgbA VARCHAR(10)
 );
 
-CREATE TABLE product_colors (
-    color_id INT NOT NULL,
+
+CREATE TABLE sizes (
+    size_id SERIAL PRIMARY KEY,
+    size_name VARCHAR(100),
+    dimension_id BIGINT NULL,
+
+    FOREIGN KEY (dimension_id) REFERENCES dimensions(dimension_id)
+);
+
+CREATE TABLE other_types (
+    other_id SERIAL PRIMARY KEY,
+    other_name VARCHAR(100)
+);
+
+CREATE TABLE variants (
+    variant_version_id BIGSERIAL PRIMARY KEY,
+    variant_id INT NOT NULL,
+    previous_variant_id BIGINT,
+    variant_name VARCHAR(200),
+    color_id INT NULL,
+    material_id INT NULL,
+    size_id INT NULL,
+    other_id INT NULL,
+    price_override DECIMAL(10, 2) NULL,
+    is_available BOOLEAN NOT NULL,
+    quantity INT NOT NULL,
     product_version_id BIGINT NOT NULL,
-    extra_cost DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    is_default BOOLEAN NOT NULL DEFAULT FALSE,
+    is_default BOOLEAN NOT NULL,
 
     FOREIGN KEY (color_id) REFERENCES colors(color_id),
+    FOREIGN KEY (material_id) REFERENCES materials(material_id),
+    FOREIGN KEY (size_id) REFERENCES sizes(size_id),
+    FOREIGN KEY (other_id) REFERENCES other_types(other_id),
     FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
 );
 
-CREATE TABLE product_color_images (
+CREATE SEQUENCE variants_variant_id_seq
+INCREMENT 1
+START 1;
+
+CREATE TABLE variant_images (
+    variant_version_id BIGINT NOT NULL,
     image_id BIGINT NOT NULL,
-    color_id INT NOT NULL,
-    product_version_id BIGINT NOT NULL,
+    order_number INT NOT NULL,
 
-    FOREIGN KEY (image_id) REFERENCES images(image_id),
-    FOREIGN KEY (color_id) REFERENCES colors(color_id),
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
-);
-
-CREATE TABLE product_measurements (
-    product_measurement_id BIGSERIAL PRIMARY KEY,
-    product_version_id BIGINT NOT NULL,
-    measurement_name VARCHAR(60) NOT NULL,
-    measurement_values VARCHAR(4000),
-    measurement_comment VARCHAR(4000),
-    extra_cost DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    is_default BOOLEAN NOT NULL DEFAULT FALSE,
-    
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
-);
-
-CREATE TABLE product_measurement_images (
-    image_id BIGINT NOT NULL,
-    product_measurement_id BIGINT NOT NULL,
-
-    FOREIGN KEY (image_id) REFERENCES images(image_id),
-    FOREIGN KEY (product_measurement_id) REFERENCES product_measurements(product_measurement_id)
+    PRIMARY KEY (variant_version_id, image_id),
+    FOREIGN KEY (variant_version_id) REFERENCES variants(variant_version_id),
+    FOREIGN KEY (image_id) REFERENCES images(image_id)
 );

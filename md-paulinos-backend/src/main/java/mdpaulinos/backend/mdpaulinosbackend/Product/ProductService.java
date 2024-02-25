@@ -14,7 +14,9 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Iterable<ProductByCategoryDTO> getProductsByCategory(Long categoryId) {
-        return productRepository.findByCategory(categoryId);
+    public Iterable<Product> getProductsByCategory(Long categoryId) {
+        return productRepository.findByCategoriesCategoryId(categoryId);
     }
+
+
 }
