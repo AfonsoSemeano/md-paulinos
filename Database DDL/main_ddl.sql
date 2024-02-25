@@ -27,17 +27,8 @@ CREATE TABLE dimensions (
 );
 
 CREATE TABLE products (
-    product_version_id BIGSERIAL PRIMARY KEY,
     product_id INT NOT NULL,
-    product_name VARCHAR(255) NOT NULL,
-    creation_date TIMESTAMP NOT NULL,
-    previous_product_version_id BIGINT NULL,
-    base_price DECIMAL(10, 2) NOT NULL,
-    default_dimension_id BIGINT NOT NULL,
-    newest BOOLEAN not null,
-
-    FOREIGN KEY (previous_product_version_id) REFERENCES products(product_version_id),
-    FOREIGN KEY (default_dimension_id) REFERENCES dimensions(dimension_id)
+    default_variant_id INT NULL
 );
 
 CREATE SEQUENCE products_product_id_seq
@@ -45,11 +36,11 @@ INCREMENT 1
 START 1;
 
 CREATE TABLE product_orders (
-    product_version_id BIGINT,
+    variant_version_id BIGINT,
     order_id BIGINT,
 
-    PRIMARY KEY (product_version_id, order_id),
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id),
+    PRIMARY KEY (variant_version_id, order_id),
+    FOREIGN KEY (variant_version_id) REFERENCES variants(variant_version_id),
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
@@ -66,7 +57,8 @@ CREATE TABLE product_categories (
     category_id INT NOT NULL,
 
     PRIMARY KEY (product_id, category_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 CREATE TABLE images (
@@ -76,20 +68,19 @@ CREATE TABLE images (
 
 CREATE TABLE materials (
     material_id SERIAL PRIMARY KEY,
-    material_name VARCHAR(40),
-    material_image_url VARCHAR(1000)
+    material_name VARCHAR(40) NOT NULL,
+    material_image_url VARCHAR(1000) NOT NULL
 );
 
 CREATE TABLE colors (
     color_id SERIAL PRIMARY KEY,
     color_name VARCHAR(20) NOT NULL,
-    color_rgbA VARCHAR(10)
+    color_rgbA VARCHAR(10) NOT NULL
 );
-
 
 CREATE TABLE sizes (
     size_id SERIAL PRIMARY KEY,
-    size_name VARCHAR(100),
+    size_name VARCHAR(100) NOT NULL,
     dimension_id BIGINT NULL,
 
     FOREIGN KEY (dimension_id) REFERENCES dimensions(dimension_id)
@@ -97,14 +88,15 @@ CREATE TABLE sizes (
 
 CREATE TABLE other_types (
     other_id SERIAL PRIMARY KEY,
-    other_name VARCHAR(100)
+    other_name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE variants (
     variant_version_id BIGSERIAL PRIMARY KEY,
     variant_id INT NOT NULL,
-    previous_variant_id BIGINT,
-    variant_name VARCHAR(200),
+    previous_variant_id BIGINT NULL,
+    product_id BIGINT NOT NULL,
+    variant_name VARCHAR(200) NULL,
     color_id INT NULL,
     material_id INT NULL,
     size_id INT NULL,
@@ -112,14 +104,15 @@ CREATE TABLE variants (
     price_override DECIMAL(10, 2) NULL,
     is_available BOOLEAN NOT NULL,
     quantity INT NOT NULL,
-    product_version_id BIGINT NOT NULL,
     is_default BOOLEAN NOT NULL,
+    is_newest BOOLEAN NOT NULL,
+    is_deleted BOOLEAN NOT NULL,
 
     FOREIGN KEY (color_id) REFERENCES colors(color_id),
     FOREIGN KEY (material_id) REFERENCES materials(material_id),
     FOREIGN KEY (size_id) REFERENCES sizes(size_id),
     FOREIGN KEY (other_id) REFERENCES other_types(other_id),
-    FOREIGN KEY (product_version_id) REFERENCES products(product_version_id)
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 CREATE SEQUENCE variants_variant_id_seq
