@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "dimensions")
+@Table(name = "categories")
 @Getter
 @Setter
 public class Category {
@@ -20,6 +20,9 @@ public class Category {
     @Column(name = "category_name")
     private String categoryName;
 
-    @Column(name = "parent_category_id")
-    private int parentCategoryId;
+    @Column(name = "category_slug")
+    private String categorySlug;
+
+    @Column(name = "parent_category_id", nullable = true)
+    private Integer parentCategoryId = -1;
 }

@@ -14,6 +14,7 @@ import java.util.Set;
 @Setter
 public class Product {
 
+    @Id
     @Column(name = "product_id")
     private int productId;
 

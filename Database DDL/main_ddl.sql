@@ -27,38 +27,8 @@ CREATE TABLE dimensions (
 );
 
 CREATE TABLE products (
-    product_id INT NOT NULL,
+    product_id BIGSERIAL PRIMARY KEY,
     default_variant_id INT NULL
-);
-
-CREATE SEQUENCE products_product_id_seq
-INCREMENT 1
-START 1;
-
-CREATE TABLE product_orders (
-    variant_version_id BIGINT,
-    order_id BIGINT,
-
-    PRIMARY KEY (variant_version_id, order_id),
-    FOREIGN KEY (variant_version_id) REFERENCES variants(variant_version_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
-);
-
-CREATE TABLE categories (
-    category_id SERIAL PRIMARY KEY,
-    category_name VARCHAR(40) NOT NULL,
-    parent_category_id INT NULL,
-
-    FOREIGN KEY (parent_category_id) REFERENCES categories(category_id)
-);
-
-CREATE TABLE product_categories (
-    product_id INT NOT NULL,
-    category_id INT NOT NULL,
-
-    PRIMARY KEY (product_id, category_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 CREATE TABLE images (
@@ -96,7 +66,8 @@ CREATE TABLE variants (
     variant_id INT NOT NULL,
     previous_variant_id BIGINT NULL,
     product_id BIGINT NOT NULL,
-    variant_name VARCHAR(200) NULL,
+    variant_name VARCHAR(200) NOT NULL,
+    variant_slug VARCHAR(420) UNIQUE NOT NULL,
     color_id INT NULL,
     material_id INT NULL,
     size_id INT NULL,
@@ -114,6 +85,35 @@ CREATE TABLE variants (
     FOREIGN KEY (other_id) REFERENCES other_types(other_id),
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
+CREATE TABLE product_orders (
+    variant_version_id BIGINT,
+    order_id BIGINT,
+
+    PRIMARY KEY (variant_version_id, order_id),
+    FOREIGN KEY (variant_version_id) REFERENCES variants(variant_version_id),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id)
+);
+
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    category_name VARCHAR(40) NOT NULL,
+    category_slug VARCHAR(120) UNIQUE NOT NULL,
+    parent_category_id INT NULL,
+
+    FOREIGN KEY (parent_category_id) REFERENCES categories(category_id)
+);
+
+CREATE TABLE product_categories (
+    product_id INT NOT NULL,
+    category_id INT NOT NULL,
+
+    PRIMARY KEY (product_id, category_id),
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+
 
 CREATE SEQUENCE variants_variant_id_seq
 INCREMENT 1
